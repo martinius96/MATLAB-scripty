@@ -9,6 +9,9 @@
 %%Program pracuje s 8-bit obrázkami v čiernobielej palete z dôvodu ľahšej reprezentácie obrázku v 2D matici 512x512 px
 %%Program poukazuje na dôležitosť MSB a LSB bitov 8-bitovej reprezentácie pixelu, na ktoré vplýva náhodne generovaný šum
 %%Ak šum ovplyvní MSB bit, dochádza k zníženiu jasu pixelu o 50% (128 bitov), ak ovplyvní LSB bit, dôjde k zníženiu jasu o 2,56% (1 bit)
+%%Vizualizácia pôvodných a ovplyvnených obrázkov (so zohľadnením každého pozmeneného bitu šumom samostatne), vizualizácia finálneho šumového obrázka
+%%Výpočet MSE (Strednej kvadratickej chyby) a PSNR (Pomer energie pôvodného obrázka a šumu)
+
 %%Vystup programu: https://i.imgur.com/3xoxrcP.png
 
 %%vymaz figure a premenne
