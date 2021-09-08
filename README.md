@@ -1,2 +1,2 @@
 # MATLAB scripty
-* Vytvorené zadania, domáce úlohy v prostredí MATLAB 2016b
+* Implementácie domácich úloh a zadaní v prostredí MATLAB 2016b
