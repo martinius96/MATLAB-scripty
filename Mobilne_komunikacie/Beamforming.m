@@ -5,6 +5,8 @@
 %%Zadanie č. 7: mmWaves, typy antén, typy komunikácie
 %%Matlab: R2016b
 
+%%Výstup programu: https://i.imgur.com/ODuE6AT.png
+
 %%Simulácia: 
 %%Variabilné nastavenie lalokov (Beamov) vysielacou stanicou - Beamforming
 %%Prispôsobenie laloku (zúženie lúča) v závislosti od vzdialenosti MT od VS
