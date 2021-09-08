@@ -6,6 +6,8 @@
 %%Popis úlohy:
 %%Pre hodnoty zo zadania "Mapa_terminalov" vypočítajte čas šírenia signálu od referenčných bodov k mobilnému terminálu pre frekvencie 900MHz a 2.4GHz
 
+%%Výstup programu: https://i.imgur.com/DK4E6d2.png
+
 close all; %% zatvor figure, okno
 clear all; %% Vymaž premenné a ich hodnoty
 rng shuffle %% náhodný generátor čísel, založený na čase
