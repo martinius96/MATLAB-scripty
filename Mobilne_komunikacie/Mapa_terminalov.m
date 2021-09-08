@@ -11,6 +11,8 @@
 %%3. Vypočítajte vzdialenosti medzi vrcholmi bodov trojuholníka, spojte ich čiarkovanou čiarou čiernej farby ku ktorej napíšete vypočítanú dĺžku do okrúhlych zátvoriek.
 %%4. Vypočítajte vzdialenosť 4. bodu (Mob. terminálu) a vrcholov trojuholníka. Spojte tieto body červenou čiarkovanou čiarou a pripíšte k nej vypočítanú vzdialenosť.
 
+%%Výstup programu: https://i.imgur.com/o7HsYeO.png
+
 close all; %% zatvor figure, okno
 clear all; %% Vymaž premenné a ich hodnoty
 rng shuffle %% náhodný generátor čísel, založený na čase
@@ -62,22 +64,19 @@ scatter(RADIOMAJAK1(1),RADIOMAJAK1(2),'x','r')
 SURADNICE_MAJAK1x = num2str(RADIOMAJAK1(1));
 SURADNICE_MAJAK1y = num2str(RADIOMAJAK1(2));
 %%vypis textu so suradnicami na x+10 a y+15 poziciu, velkosť písma 10
-text(RADIOMAJAK1(1)+10, RADIOMAJAK1(2)+15,['[',SURADNICE_MAJAK1x,' ;
-',SURADNICE_MAJAK1y,']'], 'Fontsize', 10);
+text(RADIOMAJAK1(1)+10, RADIOMAJAK1(2)+15,['[',SURADNICE_MAJAK1x,' ;',SURADNICE_MAJAK1y,']'], 'Fontsize', 10);
 hold on %%počkaj
 %%obdobne pre rádiomaják č.2
 scatter(RADIOMAJAK2(1),RADIOMAJAK2(2),'x','b')
 SURADNICE_MAJAK2x = num2str(RADIOMAJAK2(1));
 SURADNICE_MAJAK2y = num2str(RADIOMAJAK2(2));
-text(RADIOMAJAK2(1)+10, RADIOMAJAK2(2)+15,['[',SURADNICE_MAJAK2x,' ;
-',SURADNICE_MAJAK2y,']'], 'Fontsize', 10);
+text(RADIOMAJAK2(1)+10, RADIOMAJAK2(2)+15,['[',SURADNICE_MAJAK2x,' ;',SURADNICE_MAJAK2y,']'], 'Fontsize', 10);
 hold on
 %%obdobne pre rádiomaják č.3
 scatter(RADIOMAJAK3(1),RADIOMAJAK3(2),'x','g')
 SURADNICE_MAJAK3x = num2str(RADIOMAJAK3(1));
 SURADNICE_MAJAK3y = num2str(RADIOMAJAK3(2));
-text(RADIOMAJAK3(1)+10, RADIOMAJAK3(2)+15,['[',SURADNICE_MAJAK3x,' ;
-',SURADNICE_MAJAK3y,']'], 'Fontsize', 10);
+text(RADIOMAJAK3(1)+10, RADIOMAJAK3(2)+15,['[',SURADNICE_MAJAK3x,' ;',SURADNICE_MAJAK3y,']'], 'Fontsize', 10);
 usecka12 = [RADIOMAJAK1(1),RADIOMAJAK2(1)] %%x suradnice priamky
 usecka21 = [RADIOMAJAK1(2),RADIOMAJAK2(2)] %%y suradnice priamky
 usecka13 = [RADIOMAJAK1(1),RADIOMAJAK3(1)]
@@ -113,12 +112,9 @@ rozdiel3_bod_y = abs(RADIOMAJAK3(2)-y_suradnica)
 vzdialenost3_bod = round(sqrt((rozdiel3_bod_x^2)+(rozdiel3_bod_y^2)),2)
 meter3_bod = ['(',num2str(vzdialenost3_bod),')'];
 %%vypis vzdialenosti medzi 4. bodom a vrcholmi trojuholnika
-text((RADIOMAJAK1(1)+x_suradnica)/2,
-(RADIOMAJAK1(2)+y_suradnica)/2,meter1_bod,'Color','red', 'Fontsize', 10);
-text((RADIOMAJAK2(1)+x_suradnica)/2,
-(RADIOMAJAK2(2)+y_suradnica)/2,meter2_bod,'Color','red', 'Fontsize', 10);
-text((RADIOMAJAK3(1)+x_suradnica)/2,
-(RADIOMAJAK3(2)+y_suradnica)/2,meter3_bod,'Color','red', 'Fontsize', 10);
+text((RADIOMAJAK1(1)+x_suradnica)/2,(RADIOMAJAK1(2)+y_suradnica)/2,meter1_bod,'Color','red', 'Fontsize', 10);
+text((RADIOMAJAK2(1)+x_suradnica)/2,(RADIOMAJAK2(2)+y_suradnica)/2,meter2_bod,'Color','red', 'Fontsize', 10);
+text((RADIOMAJAK3(1)+x_suradnica)/2,(RADIOMAJAK3(2)+y_suradnica)/2,meter3_bod,'Color','red', 'Fontsize', 10);
 %%vykreslenie ciernych ciarkovanych ciar medzi vrcholmi
 plot(usecka12,usecka21,'--k');
 plot(usecka13,usecka31,'--k');
@@ -128,12 +124,9 @@ meter12 = ['(',num2str(vzdialenost12),')'];
 meter13 = ['(',num2str(vzdialenost13),')'];
 meter23 = ['(',num2str(vzdialenost23),')'];
 %%vykreslenie vzdialenosti jednotlivych vrcholov (zakladnovych stanic)
-text((RADIOMAJAK1(1)+RADIOMAJAK2(1))/2,
-(RADIOMAJAK1(2)+RADIOMAJAK2(2))/2,meter12, 'Fontsize', 10);
-text((RADIOMAJAK1(1)+RADIOMAJAK3(1))/2,
-(RADIOMAJAK1(2)+RADIOMAJAK3(2))/2,meter13, 'Fontsize', 10);
-text((RADIOMAJAK2(1)+RADIOMAJAK3(1))/2,
-(RADIOMAJAK2(2)+RADIOMAJAK3(2))/2,meter23, 'Fontsize', 10);
+text((RADIOMAJAK1(1)+RADIOMAJAK2(1))/2,(RADIOMAJAK1(2)+RADIOMAJAK2(2))/2,meter12, 'Fontsize', 10);
+text((RADIOMAJAK1(1)+RADIOMAJAK3(1))/2,(RADIOMAJAK1(2)+RADIOMAJAK3(2))/2,meter13, 'Fontsize', 10);
+text((RADIOMAJAK2(1)+RADIOMAJAK3(1))/2,(RADIOMAJAK2(2)+RADIOMAJAK3(2))/2,meter23, 'Fontsize', 10);
 hold on
 %%SÚČASTI GRAFU
 title('1000x1000 metrov'); %%Nadpis grafu
