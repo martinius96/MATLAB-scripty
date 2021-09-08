@@ -12,6 +12,7 @@
 %%Pôvodný signál, hodnoty signálu vo vzorkovacej perióde a následne aj spojitý vzorkovaný signál je vykreslený do pravouhlého súradnicového systému. 
 %%Celý program je navrhnutý v diskrétnej oblasti pre čas (t) - (x-os) začína v bode 0. 
 %%V grafe je vyznačená aj vzorkovacia perióda (resp. funkčná vzorkovaná hodnota pôvodného signálu).
+%%Vystup programu: https://i.imgur.com/iMuAkMc.png
 
 close all; %% zatvor figure, okno
 clear all; %% Vymaž premenné a ich hodnoty
