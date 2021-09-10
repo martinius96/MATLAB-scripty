@@ -9,7 +9,8 @@
 
 %%Simulácia: 
 %%Variabilné nastavenie lalokov (Beamov) vysielacou stanicou - Beamforming
-%%Prispôsobenie laloku (zúženie lúča) v závislosti od vzdialenosti MT od VS
+%%Prispôsobenie laloku (zúženie lúča) v závislosti od vzdialenosti MT (mob. terminálu) od VS (vysielacej stanice)
+
 close all; %%Zatvorenie okien pri každom spustení programu
 clear all; %%Vymazanie premenných pri každom spustení programu
 rng shuffle %%random generator cisel
