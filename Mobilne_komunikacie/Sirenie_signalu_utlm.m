@@ -40,7 +40,7 @@ i = i+1 %%inkrementuj premennu
 end
 Pr2dB = 10*log10(Pr2); %%prevod na dB tvar z Wattov
 plot ([0:1:1000], [Pr2dB]) %%vykresli graf signalu pre Friisov vztah
-text(0, 5,'Pondelok: 7:30, Martin Chlebovec (LBMS)', 'Fontsize', 15);
+text(0, 5,'Priebeh utlmu', 'Fontsize', 15);
 legend('Voľný priestor','Friisov vzťah') %%legenda jednotlivych priebehov
 xlabel('Vzdialenosť (m)') %%oznacenie x osi
 ylabel('Výkon prijatého signálu Pr - (dB)') %%oznacenie y osi
