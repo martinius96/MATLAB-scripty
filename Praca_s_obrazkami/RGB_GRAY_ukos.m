@@ -2,7 +2,8 @@
 
 %%Funkčnosť scriptu:
 %%obrazok 512x512x3 px sa nacita do premennej obrazok, 24-bitova hlbka
-%%Vykonajú sa operácie pre GRAYSCALE vstavanou a vlastnou metodou, zmenšenie obrázku o 50 percent
+%%Vykonajú sa operácie pre GRAYSCALE vstavanou a vlastnou metodou (zoberie sa zložka konkrétnej R, G, alebo B farmy), 
+%%alebo sa vykona priemer farieb do 8-bit čiernobielej hodnoty (vyžaduje odkomentovanie fragmentu kodu), zmenšenie obrázku o 50 percent
 %%vykona sa transponovanie matice obrazku a nasledne ukos po diagonale, nahradenie bitov za bielu farbu - 255 hodnota kazdeho px
 %%Vystup programu: https://i.imgur.com/vtnXRT2.png
 
