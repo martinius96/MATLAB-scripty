@@ -4,6 +4,7 @@
 %%obrazok 512x512x3 px sa nacita do premennej obrazok, 24-bitova hlbka
 %%Vykonajú sa operácie pre GRAYSCALE vstavanou a vlastnou metodou, zmenšenie obrázku o 50 percent
 %%vykona sa transponovanie matice obrazku a nasledne ukos po diagonale, nahradenie bitov za bielu farbu - 255 hodnota kazdeho px
+%%Vystup programu: https://i.imgur.com/vtnXRT2.png
 
 close all; %%zatvoriť existujúci figure pri spustení simulácie
 clear all; %%vymazať workspace premenné
