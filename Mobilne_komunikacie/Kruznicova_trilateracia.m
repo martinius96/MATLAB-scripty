@@ -5,10 +5,10 @@
 %%Matlab: R2016b
 
 %%Vypocet kruznicovej trilateracie s 3 bunkovymi stanicami
-%%Mobilny terminal umiestneny v strede trojuholnika - pokryty vsetkymi bunkovymi stanicami
+%%Mobilny terminal umiestneny v strede trojuholnika - pokryty vsetkymi bunkovymi stanicami (rádiomajákmi)
 %%Vypocet trilateracie s pridanim chybovosti 5%, 10%, 20% z dovodu prechodu signalu prostredim bez LoS (Line of Sight)
 
-%%Vystup programu: https://i.imgur.com/nX5DbZN.png
+%%Ocakavany vystup programu: https://i.imgur.com/nX5DbZN.png
 
 close all; %% zatvor figure, okno
 clear all; %% Vymaž premenné a ich hodnoty
@@ -18,13 +18,13 @@ RADIOMAJAK1(1) = randi([0,velkost_pola]) %% x-ová súradnica pre rádiomaják 1
 RADIOMAJAK1(2) = randi([0,velkost_pola]) %% y-ová súradnica pre rádiomaják 1
 RADIOMAJAK2(1) = randi([0,velkost_pola]) %% x-ová súradnica pre rádiomaják 2
 RADIOMAJAK2(2) = randi([0,velkost_pola]) %% y-ová súradnica pre rádiomaják 2
-rozdiel12x = abs(RADIOMAJAK1(1)-RADIOMAJAK2(1)) %%rozdiel x-ových súradníc
-%%rádiomajákov 1 a 2
-rozdiel12y = abs(RADIOMAJAK1(2)-RADIOMAJAK2(2)) %%rozdiel y-ových súradníc
-%%rádiomajákov 1 a 2
+rozdiel12x = abs(RADIOMAJAK1(1)-RADIOMAJAK2(1)) %%rozdiel x-ových súradníc rádiomajákov 1 a 2
+rozdiel12y = abs(RADIOMAJAK1(2)-RADIOMAJAK2(2)) %%rozdiel y-ových súradníc rádiomajákov 1 a 2
+
 %%vzdialenosť medzi rádiomajákom 1 a 2 v metroch, vyjadrenie cez Pytagorovu
 %%vetu v pravouhlom súradnícovom systéme
 vzdialenost12 = round(sqrt((rozdiel12x^2)+(rozdiel12y^2)),2)
+
 %%pokým je vzdialenosť menšia ako 400 metrov, opakuj generovanie súradníc,
 %%výpočet vzdialenosti, porovnaj
 while (vzdialenost12 < 400 || vzdialenost12 > 1000 )
@@ -36,6 +36,8 @@ vzdialenost12 = round(sqrt((rozdiel12x^2)+(rozdiel12y^2)),2)
 end
 RADIOMAJAK3(1) = randi([0,velkost_pola]) %% x-ová súradnica pre rádiomaják 3
 RADIOMAJAK3(2) = randi([0,velkost_pola]) %% y-ová súradnica pre rádiomaják 1
+
+%%rozdiel súradníc rádiomajáku 3 od rádiomajákov 1 a 2
 rozdiel13x = abs(RADIOMAJAK1(1)-RADIOMAJAK3(1))
 rozdiel13y = abs(RADIOMAJAK1(2)-RADIOMAJAK3(2))
 vzdialenost13 = round(sqrt((rozdiel13x^2)+(rozdiel13y^2)),2)
@@ -80,63 +82,75 @@ usecka13 = [RADIOMAJAK1(1),RADIOMAJAK3(1)]
 usecka31 = [RADIOMAJAK1(2),RADIOMAJAK3(2)]
 usecka23 = [RADIOMAJAK2(1),RADIOMAJAK3(1)]
 usecka32 = [RADIOMAJAK2(2),RADIOMAJAK3(2)]
+
 %%taznica na stred protilahlej usecky, sluzi na vykreslenie 4. bodu
 taznica = [RADIOMAJAK1(1),(RADIOMAJAK2(1)+RADIOMAJAK3(1))/2]
 taznicab = [RADIOMAJAK1(2),(RADIOMAJAK2(2)+RADIOMAJAK3(2))/2]
+
 %%PYTAGOROVA VETA --> vzdialenost
 xobjekt = taznica(1)-taznica(2); %%rozdiel x suradnic
 yobjekt = taznicab(1)-taznicab(2); %%rozdiel y suradnic
 x_suradnica = xobjekt/3+taznica(2);
 y_suradnica = yobjekt/3+taznicab(2);
 scatter(x_suradnica,y_suradnica,'*','m'); %%vykresli bod
+
 %%vykreslenie useciek cervenej ciarkovanej farby, od bodu k vrcholom
 plot([RADIOMAJAK1(1), x_suradnica],[RADIOMAJAK1(2),y_suradnica],'--r');
 plot([RADIOMAJAK2(1), x_suradnica],[RADIOMAJAK2(2),y_suradnica],'--r');
 plot([RADIOMAJAK3(1), x_suradnica],[RADIOMAJAK3(2),y_suradnica],'--r');
+
 %%vypocet vzdialenosti medzi 4. bodom a 1. vrcholom
 rozdiel1_bod_x = abs(RADIOMAJAK1(1)-x_suradnica)
 rozdiel1_bod_y = abs(RADIOMAJAK1(2)-y_suradnica)
 vzdialenost1_bod = round(sqrt((rozdiel1_bod_x^2)+(rozdiel1_bod_y^2)),2)
 meter1_bod = ['(',num2str(vzdialenost1_bod),')'];
+
 %%vypocet vzdialenosti medzi 4. bodom a 2. vrcholom
 rozdiel2_bod_x = abs(RADIOMAJAK2(1)-x_suradnica)
 rozdiel2_bod_y = abs(RADIOMAJAK2(2)-y_suradnica)
 vzdialenost2_bod = round(sqrt((rozdiel2_bod_x^2)+(rozdiel2_bod_y^2)),2)
 meter2_bod = ['(',num2str(vzdialenost2_bod),')'];
+
 %%vypocet vzdialenosti medzi 4. bodom a 3. vrcholom
 rozdiel3_bod_x = abs(RADIOMAJAK3(1)-x_suradnica)
 rozdiel3_bod_y = abs(RADIOMAJAK3(2)-y_suradnica)
 vzdialenost3_bod = round(sqrt((rozdiel3_bod_x^2)+(rozdiel3_bod_y^2)),2)
 meter3_bod = ['(',num2str(vzdialenost3_bod),')'];
+
 %%vypis vzdialenosti medzi 4. bodom a vrcholmi trojuholnika
 text((RADIOMAJAK1(1)+x_suradnica)/2,(RADIOMAJAK1(2)+y_suradnica)/2,meter1_bod,'Color','red', 'Fontsize', 10);
 text((RADIOMAJAK2(1)+x_suradnica)/2,(RADIOMAJAK2(2)+y_suradnica)/2,meter2_bod,'Color','red', 'Fontsize', 10);
 text((RADIOMAJAK3(1)+x_suradnica)/2,(RADIOMAJAK3(2)+y_suradnica)/2,meter3_bod,'Color','red', 'Fontsize', 10);
+
 %%vykreslenie ciernych ciarkovanych ciar medzi vrcholmi
 plot(usecka12,usecka21,'--k');
 plot(usecka13,usecka31,'--k');
 plot(usecka23,usecka32,'--k');
+
 %%prevedenie cisla na text a format so zatvorkami pre vypis
 meter12 = ['(',num2str(vzdialenost12),')'];
 meter13 = ['(',num2str(vzdialenost13),')'];
 meter23 = ['(',num2str(vzdialenost23),')'];
+
 %%vykreslenie vzdialenosti jednotlivych vrcholov (zakladnovych stanic)
 text((RADIOMAJAK1(1)+RADIOMAJAK2(1))/2,(RADIOMAJAK1(2)+RADIOMAJAK2(2))/2,meter12, 'Fontsize', 10);
 text((RADIOMAJAK1(1)+RADIOMAJAK3(1))/2,(RADIOMAJAK1(2)+RADIOMAJAK3(2))/2,meter13, 'Fontsize', 10);
 text((RADIOMAJAK2(1)+RADIOMAJAK3(1))/2,(RADIOMAJAK2(2)+RADIOMAJAK3(2))/2,meter23, 'Fontsize', 10);
-% 10%
+
+%% chyba merania 5%
 R1 = 1.05*(str2num(meter1_bod))
 R2 = 1.05*(str2num(meter2_bod))
 R3 = 1.05*(str2num(meter3_bod))
-% 10%
+%% chyba merania 10%
 R4 = 1.10*(str2num(meter1_bod))
 R5 = 1.10*(str2num(meter2_bod))
 R6 = 1.10*(str2num(meter3_bod))
-% 20%
+%% chyba merania 20%
 R7 = 1.20*(str2num(meter1_bod))
 R8 = 1.20*(str2num(meter2_bod))
 R9 = 1.20*(str2num(meter3_bod))
-% 5%
+
+%% vypocet a vykreslenie kruznice vsetkych radiomajakov pre 5% chybu
 priamka1 = 0:0.001:2*pi;
 kruh1x = R1 * cos(priamka1) + RADIOMAJAK1(1);
 kruh1y = R1 * sin(priamka1) + RADIOMAJAK1(2);
@@ -149,7 +163,8 @@ priamka3 = 0:0.001:2*pi;
 kruh3x = R3 * cos(priamka3) + RADIOMAJAK3(1);
 kruh3y = R3 * sin(priamka3) + RADIOMAJAK3(2);
 kruh3 = plot(kruh3x, kruh3y,'-r');
-% 10%
+
+%% vypocet a vykreslenie kruznice vsetkych radiomajakov pre 10% chybu
 priamka4 = 0:0.001:2*pi;
 kruh4x = R4 * cos(priamka4) + RADIOMAJAK1(1);
 kruh4y = R4 * sin(priamka4) + RADIOMAJAK1(2);
@@ -162,7 +177,8 @@ priamka6 = 0:0.001:2*pi;
 kruh6x = R6 * cos(priamka6) + RADIOMAJAK3(1);
 kruh6y = R6 * sin(priamka6) + RADIOMAJAK3(2);
 kruh6 = plot(kruh6x, kruh6y,'-b');
-% 20%
+
+%% vypocet a vykreslenie kruznice vsetkych radiomajakov pre 20% chybu
 priamka7 = 0:0.001:2*pi;
 kruh7x = R7 * cos(priamka7) + RADIOMAJAK1(1);
 kruh7y = R7 * sin(priamka7) + RADIOMAJAK1(2);
@@ -175,6 +191,7 @@ priamka9 = 0:0.001:2*pi;
 kruh9x = R9 * cos(priamka9) + RADIOMAJAK3(1);
 kruh9y = R9 * sin(priamka9) + RADIOMAJAK3(2);
 kruh9 = plot(kruh9x, kruh9y,'-g');
+
 %%BOD 1 a 2
 F=@(BOD1) ([(BOD1(1)-RADIOMAJAK1(1))^2+(BOD1(2)-RADIOMAJAK1(2))^2-R1^2; ...
 (BOD1(1)-RADIOMAJAK2(1))^2+(BOD1(2)-RADIOMAJAK2(2))^2-R2^2]);
