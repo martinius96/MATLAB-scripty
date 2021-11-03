@@ -6,10 +6,12 @@
 %%Matlab: R2016b
 
 %%Výstup programu: https://i.imgur.com/ODuE6AT.png
+%%Clanok k projektu: http://deadawp.blog.sector.sk/blogclanok/13309/beamforming-vizualizacia-matlab.htm
 
 %%Simulácia: 
 %%Variabilné nastavenie lalokov (Beamov) vysielacou stanicou - Beamforming
-%%Prispôsobenie laloku (zúženie lúča) v závislosti od vzdialenosti MT (mob. terminálu) od VS (vysielacej stanice)
+%%Prispôsobenie laloku (zúženie lúča) v závislosti od vzdialenosti MT (mob. terminálu) od VS (vysielacej stanice), 
+%%predchadzanie interferencii s inymi mobilnymi terminalmi / interferencii sposobenej prechodom signalu prostredim
 
 close all; %%Zatvorenie okien pri každom spustení programu
 clear all; %%Vymazanie premenných pri každom spustení programu
