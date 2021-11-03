@@ -13,6 +13,7 @@
 %%Výpočet MSE (Strednej kvadratickej chyby) a PSNR (Pomer energie pôvodného obrázka a šumu)
 
 %%Vystup programu: https://i.imgur.com/3xoxrcP.png
+%%Clanok k projektu: http://deadawp.blog.sector.sk/blogclanok/13161/sum-v-8-bitovych-obrazoch-matlab.htm
 
 %%vymaz figure a premenne
 clear all;
