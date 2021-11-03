@@ -5,7 +5,9 @@
 %%Vykonajú sa operácie pre GRAYSCALE vstavanou a vlastnou metodou (zoberie sa zložka konkrétnej R, G, alebo B farmy), 
 %%alebo sa vykona priemer farieb do 8-bit čiernobielej hodnoty (vyžaduje odkomentovanie fragmentu kodu), zmenšenie obrázku o 50 percent
 %%vykona sa transponovanie matice obrazku a nasledne ukos po diagonale, nahradenie bitov za bielu farbu - 255 hodnota kazdeho px
+
 %%Vystup programu: https://i.imgur.com/vtnXRT2.png
+%%Clanok k projektu: http://deadawp.blog.sector.sk/blogclanok/13320/praca-s-obrazkami-matlab.htm
 
 close all; %%zatvoriť existujúci figure pri spustení simulácie
 clear all; %%vymazať workspace premenné
