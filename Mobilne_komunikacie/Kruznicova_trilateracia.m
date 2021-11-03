@@ -9,6 +9,7 @@
 %%Vypocet trilateracie s pridanim chybovosti 5%, 10%, 20% z dovodu prechodu signalu prostredim bez LoS (Line of Sight)
 
 %%Ocakavany vystup programu: https://i.imgur.com/nX5DbZN.png
+%%Clanok k projektu: http://deadawp.blog.sector.sk/blogclanok/13283/kruznicova-trilateracia-matlab.htm
 
 close all; %% zatvor figure, okno
 clear all; %% Vymaž premenné a ich hodnoty
