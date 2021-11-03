@@ -9,7 +9,9 @@
 %%Popis: zakreslite spektrum signalu pre menovitú frekvenciu 1 Hz v pravouhlom súradnicovom systéme
 %%Vytvorte vizualizáciu funkčných hodnôt spektra pričom počítajte s interpoláciou pre L=2 a L=3
 %%Vložte do výsledného spektra L-1 kópii tak, aby nedochádzalo k aliasingu (prekrývaniu spektier)
+
 %%Vystup programu: https://i.imgur.com/ebakxge.png
+%%Clanok k projektu: http://deadawp.blog.sector.sk/blogclanok/13173/frekvencne-spektrum-matlab.htm
 
 close all; %% zatvor figure, okno
 clear all; %% Vymaž premenné a ich hodnoty
