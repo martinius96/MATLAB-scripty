@@ -8,7 +8,7 @@
 %%Mobilny terminal umiestneny v strede trojuholnika - pokryty vsetkymi bunkovymi stanicami (rádiomajákmi)
 %%Vypocet trilateracie s pridanim chybovosti 5%, 10%, 20% z dovodu prechodu signalu prostredim bez LoS (Line of Sight)
 
-%%Ocakavany vystup programu: https://i.imgur.com/nX5DbZN.png
+%%Ocakavany vystup programu: https://i.imgur.com/1xsrq3l.png
 %%Clanok k projektu: http://deadawp.blog.sector.sk/blogclanok/13283/kruznicova-trilateracia-matlab.htm
 
 close all; %% zatvor figure, okno
