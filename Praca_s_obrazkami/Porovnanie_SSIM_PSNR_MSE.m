@@ -1,8 +1,7 @@
 %% ============================
-%  UPSCALING QUALITY TEST SCRIPT
-%  Porovnanie: Original vs 2x, 4x
-%  Martin Chlebovec (martinius96@gmail.com)
-% =============================
+%%  Script pre porovnanie originálneho obrázka vs. 2x a 4x zväčšeného akýmkoľvek algoritmom
+%%  Martin Chlebovec (martinius96@gmail.com)
+%% ============================
 
 clc;
 clear;
