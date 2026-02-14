@@ -1,6 +1,7 @@
 %% ============================
 %%  Script pre porovnanie originálneho obrázka vs. 2x a 4x zväčšeného akýmkoľvek algoritmom
 %%  Martin Chlebovec (martinius96@gmail.com)
+%%  Script k článku: https://deadawp.blog.sector.sk/blogclanok/13558/zvacsenie-fotografie-strata-kvality.htm
 %% ============================
 
 clc;
