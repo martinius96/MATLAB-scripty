@@ -1,4 +1,5 @@
 % --- Upscale fotografie 2x algoritmom Lanczos3 (pre ostré hrany) ---
+% Script k článku https://deadawp.blog.sector.sk/blogclanok/13558/zvacsenie-fotografie-strata-kvality.htm
 % Martin Chlebovec
 
 % Vstupny obrazok, nazov vo workspace, priecienku
