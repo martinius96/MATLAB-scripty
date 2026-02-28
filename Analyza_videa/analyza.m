@@ -1,76 +1,51 @@
 %% POROVNANIE HRUBOSTI CHODU MOTORA - 101 vs 95 OKTAN
-%% RMS
-%% STD (hrubost kolisania)
-%% Spektralny centroid
+%% RMS, graf
 
 clc;
 clear;
 close all;
 
-videoFile = 'TAM_paliva.mp4';
+%% 1. Nastavenie nazvu videa
+videoFile = 'TAM_paliva.mp4';   % subor musi byt v aktualnom priecinku
 
-if exist(videoFile,'file') ~= 2
-    error('Subor TAM.mp4 sa nenachadza v Current Folder.');
-end
-
-%% 1. Nacitanie audia
+%% 2. Nacitanie audia z videa
 [audio, Fs] = audioread(videoFile);
 
+% Ak je stereo, preved na mono
 if size(audio,2) == 2
     audio = mean(audio,2);
 end
 
-t = (0:length(audio)-1)/Fs;
+%% 3. Vypocet RMS hlasitosti
+window_ms = 50;
+windowLength = round((window_ms/1000)*Fs);
 
-%% 2. Vyrezanie segmentov
-seg_101 = audio(t >= 5 & t < 29);
-seg_95  = audio(t >= 29);
+rms_vals = sqrt(movmean(audio.^2, windowLength));
 
-%% 3. RMS hlasitost
-rms_101 = sqrt(mean(seg_101.^2));
-rms_95  = sqrt(mean(seg_95.^2));
+%% 4. Prevod na decibely
+rms_dB = 20*log10(rms_vals + eps);
 
-rms_101_dB = 20*log10(rms_101 + eps);
-rms_95_dB  = 20*log10(rms_95 + eps);
+%% 5. Casova os
+t = (0:length(rms_dB)-1)/Fs;
 
-%% 4. Variabilita (hrubost kolisania)
-std_101 = std(seg_101);
-std_95  = std(seg_95);
+%% 6. Najdenie maxima
+[max_dB, idx] = max(rms_dB);
+t_max = t(idx);
 
-%% 5. Spektralna analyza
-NFFT = 2^nextpow2(length(seg_101));
-f = Fs/2*linspace(0,1,NFFT/2+1);
+%% 7. Vypis
+fprintf('\n==============================\n');
+fprintf('Maximalna hlasitost: %.2f dB\n', max_dB);
+fprintf('Cas maxima: %.3f sekundy\n', t_max);
+fprintf('==============================\n\n');
 
-FFT_101 = abs(fft(seg_101,NFFT));
-FFT_95  = abs(fft(seg_95,NFFT));
-
-spec_101 = FFT_101(1:NFFT/2+1);
-spec_95  = FFT_95(1:NFFT/2+1);
-
-% Spektralny centroid (vyssia hodnota = viac vysokych frekvencii)
-centroid_101 = sum(f'.*spec_101)/sum(spec_101);
-centroid_95  = sum(f'.*spec_95)/sum(spec_95);
-
-%% 6. Vypis vysledkov
-fprintf('\n================ POROVNANIE =================\n');
-fprintf('101 oktan:\n');
-fprintf('RMS: %.2f dBFS\n', rms_101_dB);
-fprintf('STD (hrubost kolisania): %.6f\n', std_101);
-fprintf('Spektralny centroid: %.2f Hz\n\n', centroid_101);
-
-fprintf('95 oktan:\n');
-fprintf('RMS: %.2f dBFS\n', rms_95_dB);
-fprintf('STD (hrubost kolisania): %.6f\n', std_95);
-fprintf('Spektralny centroid: %.2f Hz\n', centroid_95);
-fprintf('=============================================\n\n');
-
-%% 7. Graf spektra
+%% 8. Graf
 figure('Color','w');
-plot(f, spec_101, 'b'); hold on;
-plot(f, spec_95, 'r');
-xlim([0 5000]);
-xlabel('Frekvencia (Hz)');
-ylabel('Amplituda');
-legend('101 oktan','95 oktan');
-title('Porovnanie spektra motora');
+plot(t, rms_dB, 'b');
+hold on;
+plot(t_max, max_dB, 'ro', 'MarkerSize', 8, 'LineWidth', 2);
+
+xlabel('Cas (s)');
+ylabel('Hlasitost (dB)');
+title('RMS hlasitost zvuku v case');
 grid on;
+legend('Hlasitost (RMS dB)', 'Maximum');
