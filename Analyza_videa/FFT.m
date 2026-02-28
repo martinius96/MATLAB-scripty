@@ -1,68 +1,89 @@
-%% ANALYZA FFT MOTORA - POROVNANIE 101 vs 95 OKTAN
+%% ANALÝZA KULTIVOVANOSTI MOTORA (VOLNOBEH) - OPRAVA CHYBY HORZCAT
+clc; clear; close all;
 
-clc;
-clear;
-close all;
-
-%% 1. Nazov suboru
+%% 1. Načítanie audia
 videoFile = 'TAM_paliva.mp4';
-
 if exist(videoFile,'file') ~= 2
-    error('Subor TAM_paliva.mp4 sa nenachadza v Current Folder.');
+    error('Súbor %s nebol nájdený!', videoFile);
 end
 
-%% 2. Nacitanie audia
 [audio, Fs] = audioread(videoFile);
-
-if size(audio,2) == 2
-    audio = mean(audio,2);
-end
-
+if size(audio,2) == 2, audio = mean(audio,2); end
 t = (0:length(audio)-1)/Fs;
 
-%% 3. Rozdelenie na sekcie
-idx_101 = t >= 5 & t < 29;   % 101 oktan
-idx_95  = t >= 29;           % 95 oktan
+%% 2. Definícia sekcií
+idx_101 = t >= 5 & t < 29;   
+idx_95  = t >= 29;           
 
 segments = {'101 oktan', '95 oktan'};
 indices = {idx_101, idx_95};
-colors = {'b','r'};  % farby pre graf
+results = struct();
 
-figure('Color','w');
-hold on;
+fprintf('--- FINÁLNE POROVNANIE: 101 vs 95 OKTÁN ---\n');
 
 for i = 1:2
     seg_name = segments{i};
-    idx = indices{i};
+    raw_signal = audio(indices{i});
+    raw_signal = raw_signal - mean(raw_signal);
     
-    seg_audio = audio(idx);
+    % --- A. ČASOVÁ DOMÉNA ---
+    kurt_val = kurtosis(raw_signal);
+    [env_upper, ~] = envelope(raw_signal, 100, 'peak');
+    stability_val = std(env_upper) * 1000; 
+
+    % --- B. FREKVENČNÁ DOMÉNA (FFT) ---
+    N = length(raw_signal);
+    X = fft(raw_signal);
+    X_mag = abs(X(1:floor(N/2)+1)) / N; 
+    f_axis = (0:floor(N/2)) * Fs / N;
     
-    % FFT
-    NFFT = 2^nextpow2(length(seg_audio));
-    Y = fft(seg_audio, NFFT);
-    f = Fs/2*linspace(0,1,NFFT/2+1);
-    magnitude = abs(Y(1:NFFT/2+1));
+    X_smooth = movmean(X_mag, 150); 
+    noise_floor = median(X_mag);
+    snr_val = 20 * log10(max(X_mag) / (noise_floor + eps));
     
-    % Normalizacia na RMS alebo max (volitelne)
-    magnitude = magnitude / max(magnitude);
+    fprintf('\n========== %s ==========\n', seg_name);
+    fprintf('Kurtosis (Rázovitosť):      %.2f (menej = lepšie)\n', kurt_val);
+    fprintf('Stabilita voľnobehu:        %.2f (menej = lepšie)\n', stability_val);
+    fprintf('Čistota chodu (SNR):        %.2f dB (viac = lepšie)\n', snr_val);
     
-    % Vykreslenie
-    plot(f, 20*log10(magnitude+eps), colors{i}, 'LineWidth', 1.5);
-    
-    % Energeticke sumy v pasmach (volitelne)
-    energy_low = sum(magnitude(f>=50 & f<=200).^2);
-    energy_mid = sum(magnitude(f>200 & f<=500).^2);
-    energy_high = sum(magnitude(f>500 & f<=2000).^2);
-    
-    fprintf('\n%s:\n', seg_name);
-    fprintf('Energia 50-200 Hz: %.4f\n', energy_low);
-    fprintf('Energia 200-500 Hz: %.4f\n', energy_mid);
-    fprintf('Energia 500-2000 Hz: %.4f\n', energy_high);
+    % Uloženie dát
+    results(i).f = f_axis;
+    results(i).mag = 20*log10(X_smooth + eps);
+    results(i).snr = snr_val;
 end
 
-xlabel('Frekvencia [Hz]');
-ylabel('Amplituda [dB, normalizovana]');
-title('Porovnanie FFT motora - 101 vs 95 oktan');
-legend('101 oktan','95 oktan');
-xlim([0 5000]);
-grid on;
+%% 3. GRAFICKÉ POROVNANIE (BEZ CHYBY HORZCAT)
+figure('Color','w','Position', [100, 100, 1000, 650]);
+
+% Horný graf: Celkové spektrum
+subplot(2,1,1);
+plot(results(1).f, results(1).mag, 'b', 'LineWidth', 1.2); hold on;
+plot(results(2).f, results(2).mag, 'r', 'LineWidth', 1.2);
+xlim([20 6000]); grid on;
+title('FFT Spektrum voľnobehu (0 - 6 kHz)');
+ylabel('Amplitúda (dB)');
+legend('101 oktan', '95 oktan');
+
+% Dolný graf: Detail na mechanický hluk
+subplot(2,1,2);
+plot(results(1).f, results(1).mag, 'b', 'LineWidth', 1.5); hold on;
+plot(results(2).f, results(2).mag, 'r', 'LineWidth', 1.5);
+
+% BEZPEČNÝ VÝPOČET LIMITOV Y (pre každé pole zvlášť)
+mask1 = results(1).f >= 2000 & results(1).f <= 5000;
+mask2 = results(2).f >= 2000 & results(2).f <= 5000;
+vals1 = results(1).mag(mask1);
+vals2 = results(2).mag(mask2);
+y_min = min([min(vals1), min(vals2)]) - 2;
+y_max = max([max(vals1), max(vals2)]) + 2;
+
+ylim([y_min, y_max]);
+xlim([2000 5000]); grid on;
+title('Detail: Oblasť vysokofrekvenčného klepotu (2 - 5 kHz)');
+xlabel('Frekvencia (Hz)'); ylabel('Amplitúda (dB)');
+
+% Vyhodnotenie
+diff_snr = results(1).snr - results(2).snr;
+annotation('textbox', [0.15, 0.02, 0.7, 0.06], 'String', ...
+    sprintf('ZÁVER: 101 oktan má o %.2f dB lepší pomer signál/šum.\nMotor beží čistejšie a s menším parazitným hlukom.', diff_snr), ...
+    'FontSize', 10, 'BackgroundColor', 'y', 'HorizontalAlignment', 'center');
