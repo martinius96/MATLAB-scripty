@@ -1,7 +1,9 @@
 clear; clc; close all;
 
-%% 1. NAČÍTANIE CELÉHO SÚBORU (0 - 30s)
-file_name = '95_TAM_30.mp4'; 
+%% 1. NAČÍTANIE A OREZANIE (1 - 29s)
+file_name = 'LPG_OMV.mp4'; 
+start_time = 1; % Začiatok v sekundách
+end_time = 29;  % Koniec v sekundách
 
 try
     [audio, fs] = audioread(file_name);
@@ -14,51 +16,62 @@ if size(audio, 2) > 1
     audio = mean(audio, 2);
 end
 
-% Orezanie na 30 sekúnd
-target_dur = 30;
-max_samples = min(length(audio), round(target_dur * fs));
-sig = audio(1:max_samples);
+% --- ÚPRAVA: Výpočet indexov pre 1. až 29. sekundu ---
+idx_start = round(start_time * fs) + 1;
+idx_end = min(length(audio), round(end_time * fs));
 
-fprintf('Spracovávam %.2f sekúnd pri %d Hz.\n', length(sig)/fs, fs);
+% Extrakcia signálu
+sig = audio(idx_start:idx_end);
+dur_actual = length(sig) / fs;
 
-%% 2. ORBITÁLNA ANALÝZA (Oprava polarplot chyby)
-figure('Name','Orbitálna diagnostika','Color','w','Position',[100 100 800 700]);
+fprintf('Spracovávam úsek: %d s až %d s (Trvanie: %.2f s) pri %d Hz.\n', ...
+        start_time, end_time, dur_actual, fs);
 
-% Nastavenie dĺžky cyklu (prispôsobte podľa otáčok)
+%% 2. ORBITÁLNA ANALÝZA (Interval 1 - 29s)
+figure('Name','Orbitálna diagnostika (1-29s)','Color','w','Position',[100 100 800 700]);
+
+% Nastavenie dĺžky cyklu (prispôsobte podľa otáčok motora)
 cycle_len = 1200; 
 num_cycles = floor(length(sig) / cycle_len);
+
+% Reshape len pre orezaný signál
 s_mat = reshape(sig(1:num_cycles * cycle_len), cycle_len, []);
 
-% Uhlová os
+% Uhlová os (0 až 360 stupňov v radiánoch)
 theta = linspace(0, 2*pi, cycle_len);
 
-% --- FIX: Explicitné vytvorenie polárnych osí ---
+% FIX: Explicitné vytvorenie polárnych osí
 ax = polaraxes; 
 hold(ax, 'on');
 
 % Vykreslenie všetkých cyklov (priesvitné sivé)
-p_all = polarplot(ax, theta, s_mat', 'Color', [0.1 0.1 0.1 0.02]); 
+polarplot(ax, theta, s_mat', 'Color', [0.1 0.1 0.1 0.02]); 
 
 % Vykreslenie priemeru (hrubá modrá)
-p_mean = polarplot(ax, theta, mean(s_mat, 2), 'b', 'LineWidth', 2);
+polarplot(ax, theta, mean(s_mat, 2), 'b', 'LineWidth', 2);
 
-% Nastavenia grafu cez objekt 'ax'
-title(ax, {'Orbitálny graf: Celých 30 sekúnd', 'Palivo: 95 Oktán'}, 'FontSize', 12);
-rlim(ax, [-0.15 0.15]); 
+% Nastavenia grafu (Dynamické popisy pre 1-29s)
+title(ax, {sprintf('Orbitálny graf: %d - %d sekunda', start_time, end_time), ...
+           'Palivo: LPG'}, 'FontSize', 12);
+       
+rlim(ax, [min(sig)*1.1 max(sig)*1.1]); % Automatické prispôsobenie limitov podľa signálu
 ax.ThetaZeroLocation = 'top';
 ax.ThetaDir = 'clockwise';
 grid(ax, 'on');
 
-%% 3. DOPLNKOVÁ ANALÝZA: RMS STABILITA
-figure('Name','Stabilita signálu','Color','w');
+%% 3. DOPLNKOVÁ ANALÝZA: RMS STABILITA (Interval 1 - 29s)
+figure('Name','Stabilita signálu (1-29s)','Color','w');
+
 cycle_rms = rms(s_mat);
-t_axis = linspace(0, 30, length(cycle_rms));
+% Časová os začína od start_time a končí v end_time
+t_axis = linspace(start_time, end_time, length(cycle_rms));
 
-plot(t_axis, cycle_rms, 'Color', [0.85 0.33 0.1]);
+plot(t_axis, cycle_rms, 'Color', [0.85 0.33 0.1], 'LineWidth', 1.5);
 hold on;
-yline(mean(cycle_rms), 'k--', 'Priemerné RMS');
+yline(mean(cycle_rms), 'k--', sprintf('Priemerné RMS: %.4f', mean(cycle_rms)));
 
-title('Stabilita energie počas 30 sekúnd');
+title(sprintf('Stabilita energie (Interval %d - %d s)', start_time, end_time));
 xlabel('Čas [s]');
 ylabel('RMS Amplitúda');
+xlim([start_time end_time]); % Zabezpečí, že os X začína na 1 a končí na 29
 grid on;
