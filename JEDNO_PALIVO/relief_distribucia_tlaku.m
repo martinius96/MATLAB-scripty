@@ -1,7 +1,9 @@
 clear; clc; close all;
 
-%% 1. NAČÍTANIE A PRÍPRAVA DÁT (0 - 30s)
-filename = '95_TAM_30.mp4'; 
+%% 1. NAČÍTANIE A FIXNÉ OREZANIE (1 - 29s)
+filename = 'LPG_OMV.mp4'; 
+start_time = 1; 
+end_time = 29;
 
 try
     [audio, fs] = audioread(filename);
@@ -9,72 +11,68 @@ catch
     error('Súbor %s nebol nájdený!', filename);
 end
 
-% Prevod na mono
 if size(audio,2) > 1, audio = mean(audio,2); end
 
-% Orezanie na 30 sekúnd
-target_dur = 30;
-max_samples = min(length(audio), round(target_dur * fs));
-sig = audio(1:max_samples);
+% Presné indexy pre výrez
+idx_start = round(start_time * fs) + 1;
+idx_end = round(end_time * fs);
+sig = audio(idx_start:idx_end);
 
-% Parametre pre analýzu
+% Parametre analýzy
 win = 1024; ovp = 512; nfft = 1024;
-col_95 = [0 0.4470 0.7410]; % Štýlová modrá pre 95 oktán
+col_95 = [0 0.4470 0.7410]; 
 
-%% 2. VIZUALIZÁCIA: 3D WATERFALL (Spektrálny reliéf)
-figure('Name','3D Waterfall Analýza: 95 Oktán','Color','w','Position',[50 100 1000 600]);
+fprintf('Spracovávam výhradne úsek: %d až %d sekúnd.\n', start_time, end_time);
 
-% Zobrazenie detailu (prvé 2 sekundy pre lepšiu viditeľnosť reliefu)
-dur_show = min(length(sig), round(2.0 * fs));
-[s, f, t] = spectrogram(sig(1:dur_show), hamming(win), ovp, nfft, fs);
+%% 2. 3D WATERFALL (Iba 1 - 29s)
+figure('Name','3D Waterfall Analýza','Color','w','Position',[50 100 1000 600]);
 
-waterfall(f/1000, t, 20*log10(abs(s')+eps));
-view(30, 45); 
-colormap jet; 
-title('Spektrálny reliéf (Detail prvých 2s)');
+% Spektrogram pre celý tvoj vybraný rozsah
+[s, f, t_spec] = spectrogram(sig, hamming(win), ovp, nfft, fs);
+t_spec = t_spec + start_time; % Posun osi, aby začínala na 1s
+
+waterfall(f/1000, t_spec, 20*log10(abs(s')+eps));
+view(30, 45); colormap jet; 
+title(sprintf('Spektrálny reliéf: %d až %d s', start_time, end_time));
 xlabel('Frekvencia [kHz]'); ylabel('Čas [s]'); zlabel('Amplitúda [dB]');
-xlim([0 8]); % Zameranie na hlavné frekvencie
-zlim([-180 40]);
+xlim([0 8]); 
 grid on;
 
-%% 3. VIZUALIZÁCIA: HISTOGRAM (Distribúcia amplitúd)
+%% 3. HISTOGRAM (Iba 1 - 29s)
 figure('Name','Hustota amplitúd','Color','w');
 histogram(sig, 300, 'Normalization', 'pdf', 'FaceColor', col_95, 'EdgeAlpha', 0.1);
-grid on; 
-xlim([-0.15 0.15]);
-title('Štatistická distribúcia tlaku/zvuku (95 Oktán)');
-xlabel('Amplitúda'); ylabel('Hustota pravdepodobnosti');
+title(sprintf('Distribúcia amplitúd (%d - %d s)', start_time, end_time));
+xlabel('Amplitúda'); ylabel('Hustota');
+grid on;
 
-%% 4. VIZUALIZÁCIA: ENERGETICKÁ BILANCIA (Frekvenčné pásma)
-% Definícia pásiem v Hz
+%% 4. ENERGETICKÁ BILANCIA (Iba 1 - 29s)
 bands = [0 800; 800 2500; 2500 7000; 7000 15000];
-labels = {'Hlboké (Basy)', 'Stredy', 'Vysoké', 'Ultra'};
-
-% Výpočet PSD (Power Spectral Density)
+labels = {'Hlboké', 'Stredy', 'Vysoké', 'Ultra'};
 [p, f_p] = pwelch(sig, hamming(win), ovp, nfft, fs);
-
-% Integrácia energie v pásmach
 e_vals = arrayfun(@(i) sum(p(f_p >= bands(i,1) & f_p < bands(i,2))), 1:4);
 
 figure('Name','Rozdelenie energie','Color','w');
 pie(e_vals, labels);
-title('Energetická bilancia spaľovania (95 Oktán)');
+title(sprintf('Energia v pásmach (%d - %d s)', start_time, end_time));
 
-%% 5. ČASOVÝ DETAIL (Priebeh impulzov)
+%% 5. ČASOVÝ PRIEBEH (Iba 1 - 29s)
 figure('Name','Časová analýza','Color','w');
-t_full = (0:length(sig)-1)/fs;
+t_full = linspace(start_time, end_time, length(sig));
 
-% Celý priebeh (0-30s)
+% Horný graf: Celý orezaný úsek
 subplot(2,1,1);
 plot(t_full, sig, 'Color', col_95);
-title('Kompletný 30s záznam');
+title(sprintf('Signál od %d do %d sekundy', start_time, end_time));
 xlabel('Čas [s]'); ylabel('Amplitúda');
-grid on; axis tight;
+xlim([start_time end_time]);
+grid on;
 
-% Zoom na detail (napr. medzi 5.0s a 5.2s pre zobrazenie jednotlivých zážihov)
+% Dolný graf: Automatický detail (stredná sekunda nahrávky pre ukážku impulzov)
 subplot(2,1,2);
-plot(t_full, sig, 'Color', col_95, 'LineWidth', 1);
-title('Detail jednotlivých impulzov (Zoom)');
+mid_point = (start_time + end_time) / 2;
+plot(t_full, sig, 'Color', col_95);
+title('Detailný pohľad na štruktúru signálu (výrez 0.2s)');
 xlabel('Čas [s]'); ylabel('Amplitúda');
-xlim([5.0 5.2]); % Zobrazenie 200ms úseku
+% Dynamický zoom na stred nahrávky
+xlim([mid_point mid_point + 0.2]); 
 grid on;
