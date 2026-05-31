@@ -1,19 +1,20 @@
 clear; clc; close all;
+%%subory, label
 files = {'95_TAM.mp4', '100_OMV.mp4', 'LPG_OMV.mp4'};
 labels = {'Benzín TAM 95', 'Benzín OMV 100', 'LPG OMV'};
 res = struct();
 
-% Konštanty pre tvoj motor na voľnobehu
-rpm = 790; 
-f_crank = rpm / 60;      % Základná frekvencia kľuky (~13.17 Hz)
-f_firing = f_crank * 2;  % Hlavná frekvencia zážihov pre 4-valec (~26.33 Hz)
+% konstanty
+rpm = 790; %%otacky motora na volnobehu stredna hodnota
+f_crank = rpm / 60;      % Frekvencia klukoveho hriadela --> jedno otocenie (~13.17 Hz)
+f_firing = f_crank * 2;  % Frekvencia zazihov pre 4-valec (~26.33 Hz)
 
 for i = 1:length(files)
     try
         [y, fs] = audioread(files{i});
         if size(y, 2) > 1, y = mean(y, 2); end
         
-        % Orezanie 1s - 29s
+        % Orezanie 1s - 29s na spracovanie
         y = y(fs : 29*fs);
         y = y / max(abs(y)); % Normalizácia
         L = length(y);
@@ -35,7 +36,7 @@ for i = 1:length(files)
         
         % --- 2. ISO 1996: Impulzivita voľnobežných zážihov ---
         % Meria rázovosť jednotlivých zážihov a vstrekov
-        window_len = floor(fs * 0.05); % 50ms okno (obsiahne aspoň jeden zážih)
+        window_len = floor(fs * 0.05); %% 50ms okno (obsiahne aspoň jeden zážih)
         num_windows = floor(L / window_len);
         rms_local = zeros(num_windows, 1);
         for w = 1:num_windows
@@ -71,7 +72,7 @@ for i = 1:length(files)
     end
 end
 
-% --- TABUĽKA VÝSLEDKOV (ŠPECIÁL PRE VOĽNOBEH) ---
+%%KONZOLA VYPIS
 fprintf('\n%-15s | %-15s | %-15s | %-15s | %-15s\n', ...
     'Palivo', 'ISO 532 [Vl.]', 'ISO 1996 [Im.]', 'ISO 5130 [rel dB]', 'ISO 13373 [%]');
 fprintf('--------------------------------------------------------------------------------------------------\n');
@@ -81,7 +82,7 @@ for i = 1:length(res)
         res(i).iso5130_db_rel, res(i).iso13373_purity);
 end
 
-% --- GRAFICKÁ VIZUALIZÁCIA ---
+%%GRAFY
 figure('Name', 'Analýza voľnobehu motora (790 RPM) podľa ISO', 'Position', [100, 100, 950, 600]);
 
 subplot(2,2,1);
